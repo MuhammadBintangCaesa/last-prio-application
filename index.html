@@ -7,204 +7,220 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
       <link rel="icon" type="image/png" href="image/prio.back.png">
-        <style>
-           
-            body {
-                font-family: 'Inter', sans-serif;
-                min-height: 100vh;
-                background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
-                overflow-y: auto;
-                overflow-x: hidden;
-                display: flex;
-                flex-direction: column;
-            }
-            .stars {
-                position: fixed;
-                top: 0;
-                left: 0;
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .task-card { transition: all 0.3s ease; }
+        .task-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .completed { text-decoration: line-through; opacity: 0.6; }
+        .priority-badge { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 9999px; }
+        .priority-high { background-color: #FECACA; color: #991B1B; }
+        .priority-medium { background-color: #FEF3C7; color: #92400E; }
+        .priority-low { background-color: #D1FAE5; color: #065F46; }
+
+        #app-container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem 6rem;
+        }
+
+        @media (min-width: 720px) {
+            .cube-container .container {
                 width: 100%;
-                height: 120%;
-                transform: rotate(-45deg);
             }
-            .star {
-                --star-color: blue;
-                --star-tail-length: 4em;
-                --star-tail-height: 2px;
-                --star-width: calc(var(--star-tail-length) / 6);
-                --fall-duration: 9s;
-                --tail-fade-duration: var(--fall-duration);
-                position: absolute;
-                top: var(--top-offset, 0);
-                left: 0;
-                width: var(--star-tail-length);
-                height: var(--star-tail-height);
-                color: var(--star-color);
-                background: linear-gradient(45deg, currentColor, transparent);
-                border-radius: 50%;
-                filter: drop-shadow(0 0 6px currentColor);
-                transform: translate3d(104em, 0, 0);
-                animation: fall var(--fall-duration) var(--fall-delay, 0s) linear infinite, tail-fade var(--tail-fade-duration) var(--fall-delay, 0s) ease-out infinite;
+        }
+
+        body {
+            background-color: #000 !important;
+            position: relative; 
+            inset: 0;
+            display: block; 
+            min-height: 100vh;
+            overflow-y: auto; 
+        }
+
+        #main-content {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+        /* Animasi Kubus */
+        .cube-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .cube-container .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            width: 100%;
+        }
+        .cube-container .container .box {
+            position: relative;
+            left: -100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: calc(100% + 400px);
+            -webkit-box-reflect: below 1px linear-gradient(transparent, #000);
+            animation: animatesurface 1.5s ease-in-out infinite;
+        }
+        @keyframes animatesurface {
+            0% {
+                transform: translateX(0);
             }
-            .star::before, .star::after {
-                position: absolute;
-                content: '';
-                top: 0;
-                left: calc(var(--star-width) / -2);
-                width: var(--star-width);
-                height: 100%;
-                background: linear-gradient(45deg, transparent, currentColor, transparent);
-                border-radius: inherit;
-                animation: blink 2s linear infinite;
+            100% {
+                transform: translateX(-200px);
             }
-            .star::before { transform: rotate(45deg); }
-            .star::after { transform: rotate(-45deg); }
-            @keyframes fall {
-                to {
-                    transform: translate3d(-30em, 0, 0);
-                }
+        }
+        .cube-container .container .box .cube {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            background: #03e9f4;
+            box-shadow: 0 0 5px rgba(3,233,244,1),
+                        0 0 25px rgba(3,233,244,1),
+                        0 0 50px rgba(3,233,244,1),
+                        0 0 150px rgba(3,233,244,1);
+            transform-origin: bottom right;
+            animation: animate 1.5s ease-in-out infinite;
+        }
+        @keyframes animate {
+            0% { 
+                transform: rotate(0deg);
             }
-            @keyframes tail-fade {
-                0%, 50% {
-                    width: var(--star-tail-length);
-                    opacity: 1;
-                }
-                70%, 80% {
-                    width: 0;
-                    opacity: 0.4;
-                }
-                100% {
-                    width: 0;
-                    opacity: 0;
-                }
+            60%, 70%, 80%, 100% {
+                transform: rotate(90deg);
             }
-            @keyframes blink {
-                50% {
-                    opacity: 0.6;
-                }
+            65% {
+                transform: rotate(85deg);
             }
-            star {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 6em;
-                height: 2px;
-                color: #fff;
-                background: linear-gradient(45deg, currentColor, transparent);
-                border-radius: 50%;
-                filter: drop-shadow(0 0 6px currentColor);
-                transform: translate3d(104em, 0, 0);
-                animation: fall 9s linear infinite, tail-fade 9s ease-out infinite;
+            75% {
+                transform: rotate(87.5deg);
             }
-            .star::before, .star::after {
-                position: absolute;
-                content: '';
-                top: 0;
-                left: calc(6em / -12);
-                width: 1em;
-                height: 100%;
-                background: linear-gradient(45deg, transparent, currentColor, transparent);
-                border-radius: inherit;
-                animation: blink 2s linear infinite;
-            }
-            .star::before { transform: rotate(45deg); }
-            .star::after { transform: rotate(-45deg); }
-            @keyframes fall {
-                to { transform: translate3d(-30em, 0, 0); }
-            }
-            @keyframes tail-fade {
-                0%, 50% { width: 6em; opacity: 1; }
-                70%, 80% { width: 0; opacity: 0.4; }
-                100% { width: 0; opacity: 0; }
-            }
-            @keyframes blink {
-                50% { opacity: 0.6; }
-            }
-            #main-content {
-                background: rgba(255,255,255,0.06);
-                border-radius: 16px;
-                border: 1px solid rgba(255,255,255,0.07);
-                padding-top: 2rem;
-                padding-bottom: 2rem;
-            }
-        </style>
+        }
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            background: rgba(0,0,0,0.1);
+            padding: 20px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .navbar a:hover {
+            background: rgba(255,255,255,0.1);
+            color: #03e9f4;
+            transform: translateY(-2px);
+        }
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            text-align: center;
+        }
+        .tutorial-modal .modal-content {
+            max-width: 90vw !important;
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+        .modal-content p {
+            margin-bottom: 20px;
+        }
+        .modal-content textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .modal-content button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #03e9f4;
+            color: #000;
+            cursor: pointer;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        #reviews-container {
+            transition: transform 1s ease;
+        }
+
+    </style>
 </head>
 <body class="text-slate-800">
-                <div class="stars">
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-  <div class="star"></div>
-</div>
-        <!-- NAVBAR -->
-        <nav class="w-full bg-white/20 backdrop-blur-md border-b border-white/20 static">
-            <div class="max-w-4xl mx-auto flex flex-row items-center justify-between px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <img src="image/prio.back-removebg-preview.png" alt="Logo Prio" class="w-10 h-10 rounded-full bg-white/60 p-1">
-                    <span class="text-xl font-bold text-white tracking-widest">PRIO</span>
-                </div>
-                <div class="flex-1 flex justify-end items-center gap-2">
-                    <button id="about-us-btn" class="px-3 py-1.5 rounded-lg text-sm bg-white/30 text-blue-900 hover:bg-white/50 transition">Tentang Aplikasi</button>
-                    <button id="review-app-btn" class="px-3 py-1.5 rounded-lg text-sm bg-white/30 text-blue-900 hover:bg-white/50 transition">Review Aplikasi</button>
-                </div>
+    <div class="cube-container">
+        <div class="container">
+            <div class="box">
+                <div class="cube"></div>
             </div>
-                <!-- header -->
+        </div>
+    </div>
+    <div id="app-container" class="max-w-4xl mx-auto p-4 md:p-8">
+        <nav class="navbar">
+            <div class="flex items-center gap-4">
+                <img src="image/prio.back-removebg-preview.png" alt="logo" class="h-16">
+                <span class="text-2xl font-bold text-white">MyPrio</span>
+            </div>
+            <div class="flex gap-4">
+                <a href="#" id="about-link">Tentang Kami</a>
+                <a href="#" id="review-link">Review Web</a>
+                <a href="#" id="tutorial-link">Tutorial</a>
+            </div>
         </nav>
-        <div id="app-container" class="max-w-4xl mx-auto p-4 md:p-8">
-        <header id= "header" class="mb-8 text-center text-white space-800">
-            <h1 class="js-split text-4xl md:text-5xl font-extrabold tracking-widest mb-2"
-                style="line-height:1;">
-                Selamat Datang di <span class="text-blue-300">Prio</span>
-            </h1>
-            <p class="text-white-400 mb-2">Asisten cerdas untuk memprioritaskan tugas kuliah Anda.</p>
-            <img src="image/prio.back-removebg-preview.png" 
-             alt="gambar logo prio" 
-             class="mx-auto my-4 w-32 h-32">
+
+        <br>
+        <header id= "header" class="mb-8 text-center text-white">
+            <p class="text-lg text-slate-300">Bantu kamu mengelola dan memprioritaskan tugas dengan cerdas</p>
         </header>
         
         <!-- Elemen UI untuk Login dan Logout -->
@@ -233,14 +249,28 @@
         </div>
         </div>
 
-        <div id="about-us-modal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div class="bg-white rounded-xl shadow-xl w-[90%] max-w-[400px] p-6 text-slate-700 relative flex flex-col items-center justify-center max-h-[50vh] overflow-y-auto">
-                        <h3 class="text-xl font-bold mb-2 text-center">Tentang Aplikasi</h3>
-                        <p class="mb-2 text-sm text-slate-600">Aplikasi <b>Prio</b> dibuat oleh mahasiswa Universitas Gunadarma sebagai mini project untuk membantu mahasiswa memprioritaskan tugas kuliah secara cerdas dan efisien.</p>
-                        <ul class="list-disc list-inside text-sm text-slate-600 mb-4">
-                            <li>Pengembang: <b>Kelompok Sains Data</b></li>
-                            <li>Kampus: <b>Universitas Gunadarma</b></li> </ul>
-                            <div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div>
+
+            <!-- MODAL KEBIJAKAN PRIVASI -->
+            <div id="privacy-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+                <div class="bg-white/90 rounded-xl shadow-xl w-[90%] sm:w-[420px] p-6 text-slate-700 relative">
+                    <h3 class="text-xl font-bold mb-3 text-center">Kebijakan Privasi</h3>
+                    <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                        Kami menghormati privasi Anda. Data akun Google Anda hanya digunakan untuk otentikasi login
+                        dan tidak akan dibagikan kepada pihak ketiga tanpa izin Anda.
+                    </p>
+                    <ul class="list-disc list-inside text-sm text-slate-600 mb-4 text-left">
+                        <li>Informasi pribadi tidak disimpan secara permanen di server.</li>
+                        <li>Cookie hanya digunakan untuk menjaga sesi login.</li>
+                        <li>Anda dapat menghapus data login kapan saja melalui tombol Logout.</li>
+                    </ul>
+                    <button id="close-privacy" class="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-all w-full">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tampilan Setelah Login -->
+            <div id="user-view" class="hidden text-center mt-6">
                 <p class="text-sm text-slate-300 mb-3">Login sebagai <strong id="user-email" class="text-white"></strong></p>
                 <button id="logout-button" class="bg-red-500 text-white font-semibold py-1.5 px-5 text-sm rounded-lg hover:bg-red-600 transition-all shadow-md">Logout</button>
             </div>
@@ -248,18 +278,8 @@
 
         <!-- Konten Utama -->
     <main id="main-content" class="hidden min-h-screen bg-transparent py-10 px-4 max-w-6xl mx-auto">
-                        <!-- GREETING & RINGKASAN -->
-                        <div class="bg-gradient-to-r from-blue-100/80 to-green-100/80 p-6 rounded-xl shadow-md mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <div>
-                                <h2 class="text-2xl font-bold text-blue-700 mb-1">Halo, <span id="main-greeting-user" class="text-indigo-600">User</span>! 👋</h2>
-                                <p class="text-slate-600">Selamat datang di Prio. Prioritaskan tugasmu dan capai targetmu!</p>
-                            </div>
-                            <div class="flex flex-col items-end">
-                                <span class="text-lg font-semibold text-green-700">Total Tugas: <span id="main-task-count" class="font-bold">0</span></span>
-                            </div>
-                        </div>
-            <div class="bg-white/80 p-6 rounded-xl shadow-md mb-8">
-                <h2 class="text-2xl font-bold mb-4 text-blue-700 flex items-center gap-2"><svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>Tambah Tugas</h2>
+            <div class="bg-white p-6 rounded-xl shadow-md mb-8">
+                <h2 class="text-xl font-semibold mb-4">Tambah Tugas (Manual)</h2>
                 <!-- Form input -->
                 <form id="task-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <input type="text" class="task-name w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh → Tugas 1">
@@ -279,7 +299,7 @@
             <div>
                 <!-- Daftar Tugas & Tombol Download Baru -->
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-blue-700">Daftar Tugas Anda</h2>
+                    <h2 class="text-xl font-semibold text-white">Daftar Tugas Anda (Diurutkan)</h2>
                     <!-- Tombol Download HANYA UNTUK GOOGLE USER -->
                     <button id="download-my-data-button" class="hidden bg-green-600 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -290,10 +310,6 @@
                 <!-- Panel Admin DIHAPUS -->
 
                 <div id="task-list" class="space-y-4">
-                                        <div id="empty-task-illustration" class="hidden flex flex-col items-center justify-center py-8">
-                                            <img src="https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/clipboard.svg" alt="No tasks" class="w-24 h-24 mb-4 opacity-60">
-                                            <p class="text-slate-400 text-lg">Belum ada tugas. Yuk, tambah tugas pertamamu!</p>
-                                        </div>
                     <p id="loading-tasks" class="text-slate-300 text-center">Memuat tugas...</p>
                 </div>
             </div>
@@ -303,98 +319,55 @@
 </html>
 
 
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-about">&times;</span>
+            <h2>Tentang Kami</h2>
+            <p>Kami adalah mahasiswa dari Universitas Gunadarma yang mengembangkan aplikasi Prio untuk membantu mahasiswa dalam memprioritaskan tugas kuliah dengan cerdas.</p>
+            <button id="close-about-button">Tutup</button>
+        </div>
+    </div>
+
+    <div id="review-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-review">&times;</span>
+            <h2>Berikan Review Web Kita</h2>
+            <input type="text" placeholder="Nama Anda" id="review-name" class="w-full px-3 py-2 border border-slate-300 rounded-lg mb-4"><br>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Rating:</label>
+                <div class="stars flex text-2xl">
+                    <span class="star cursor-pointer text-gray-400" data-rating="1">★</span>
+                    <span class="star cursor-pointer text-gray-400" data-rating="2">★</span>
+                    <span class="star cursor-pointer text-gray-400" data-rating="3">★</span>
+                    <span class="star cursor-pointer text-gray-400" data-rating="4">★</span>
+                    <span class="star cursor-pointer text-gray-400" data-rating="5">★</span>
+                </div>
+            </div>
+            <textarea placeholder="Tulis review Anda di sini..." class="w-full px-3 py-2 border border-slate-300 rounded-lg mb-4"></textarea><br>
+            <button id="submit-review">Kirim Review</button>
+            <button id="close-review-button">Tutup</button>
+        </div>
+    </div>
+
+    <div id="tutorial-modal" class="modal tutorial-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-tutorial">&times;</span>
+            <h2>Tutorial Penggunaan</h2>
+            <div class="mt-6 rounded-xl overflow-hidden border border-white/20 shadow-inner">
+                <iframe 
+                    class="w-full aspect-video rounded-xl"
+                    src="https://www.youtube.com/embed/yBLAbgD-AlU"
+                    title="Video intro"
+                    allow="accelerometer; autoplay=0; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <button id="close-tutorial-button">Tutup</button>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script type="module">
-
-                // Dropdown menu logic
-                document.addEventListener('DOMContentLoaded', () => {
-                    const navbarAuth = document.getElementById('navbar-auth');
-                    const dropdown = document.getElementById('navbar-dropdown');
-                    if (navbarAuth) {
-                        navbarAuth.addEventListener('click', (e) => {
-                            if (dropdown) dropdown.classList.toggle('hidden');
-                            e.stopPropagation();
-                        });
-                    }
-                    document.body.addEventListener('click', () => {
-                        if (dropdown) dropdown.classList.add('hidden');
-                    });
-                });
-
-                // About Us modal logic
-                document.addEventListener('DOMContentLoaded', () => {
-                    const aboutBtn = document.getElementById('about-us-btn');
-                    const aboutModal = document.getElementById('about-us-modal');
-                    const closeAbout = document.getElementById('close-about-us');
-                    if (aboutBtn && aboutModal && closeAbout) {
-                        aboutBtn.onclick = (e) => { aboutModal.classList.remove('hidden'); e.stopPropagation(); };
-                        closeAbout.onclick = () => aboutModal.classList.add('hidden');
-                    }
-                });
-
-                // Review modal logic
-                document.addEventListener('DOMContentLoaded', () => {
-                    const reviewBtn = document.getElementById('review-app-btn');
-                    const reviewModal = document.getElementById('review-modal');
-                    const closeReview = document.getElementById('close-review');
-                    const reviewForm = document.getElementById('review-form');
-                    const reviewText = document.getElementById('review-text');
-                    const reviewList = document.getElementById('review-list');
-                    let reviews = [];
-                    if (reviewBtn && reviewModal && closeReview && reviewForm && reviewText && reviewList) {
-                        reviewBtn.onclick = (e) => { reviewModal.classList.remove('hidden'); e.stopPropagation(); };
-                        closeReview.onclick = () => reviewModal.classList.add('hidden');
-                        reviewForm.onsubmit = (ev) => {
-                            ev.preventDefault();
-                            const val = reviewText.value.trim();
-                            if (val) {
-                                reviews.unshift(val);
-                                reviewText.value = '';
-                                renderReviews();
-                            }
-                        };
-                        function renderReviews() {
-                            reviewList.innerHTML = reviews.length === 0 ? '<p class="text-slate-400 text-sm text-center">Belum ada review.</p>' : reviews.map(r => `<div class='bg-slate-100 rounded-lg px-3 py-2 text-slate-700 text-sm'>${r}</div>`).join('');
-                        }
-                        renderReviews();
-                    }
-                });
-
-        // Update greeting user dan jumlah tugas di main page
-        function updateMainGreeting(user) {
-            const el = document.getElementById('main-greeting-user');
-            if (el) {
-                el.textContent = user?.email ? user.email.split('@')[0] : 'Tamu';
-            }
-        }
-        function updateMainTaskCount(count) {
-            const el = document.getElementById('main-task-count');
-            if (el) el.textContent = count;
-        }
-        function showEmptyTaskIllustration(show) {
-            const illu = document.getElementById('empty-task-illustration');
-            if (illu) illu.classList.toggle('hidden', !show);
-        }
-
-                        // Navbar login/logout dinamis
-                        function updateNavbarAuth(user) {
-                                const navbarAuth = document.getElementById('navbar-auth');
-                                if (!navbarAuth) return;
-                                navbarAuth.innerHTML = '';
-                                if (user) {
-                                        navbarAuth.innerHTML = `<span class="text-white text-sm mr-2">${user.email || 'Tamu'}</span><button id="navbar-logout" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 text-sm">Logout</button>`;
-                                        setTimeout(() => {
-                                            const btn = document.getElementById('navbar-logout');
-                                            if (btn) btn.onclick = () => signOut(auth);
-                                        }, 100);
-                                } else {
-                                        navbarAuth.innerHTML = `<button id="navbar-login" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 text-sm">Login</button>`;
-                                        setTimeout(() => {
-                                            const btn = document.getElementById('navbar-login');
-                                            if (btn) btn.onclick = () => document.getElementById('login-button').click();
-                                        }, 100);
-                                }
-                        }
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, serverTimestamp, doc, updateDoc, deleteDoc, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -416,6 +389,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log("[DEBUG] Halaman HTML selesai dimuat. Memulai skrip.");
 
+            let selectedRating = 0;
+
             // Konfigurasi Firebase
             const firebaseConfig = {
                 apiKey: "AIzaSyC4WwUhxG5XROTr5lSHvhDS4zj2Lqmw1U0",
@@ -433,6 +408,11 @@
             auth = getAuth(app);
             console.log("[DEBUG] Firebase diinisialisasi.");
 
+            // --- Fungsi Review ---
+            function listenToReviews() {
+                renderReviews();
+            }
+
             // --- Elemen UI ---
             const loginView = document.getElementById('login-view');
             const userView = document.getElementById('user-view');
@@ -448,8 +428,6 @@
 
             // --- onAuthStateChanged (Disederhanakan) ---
             onAuthStateChanged(auth, async (user) => {
-                                updateMainGreeting(user);
-                updateNavbarAuth(user);
                 // Sembunyikan semua elemen dinamis di awal
                 mainContent.classList.add('hidden');
                 userView.classList.add('hidden');
@@ -476,6 +454,8 @@
                     renderTasks([]);
                 }
             });
+
+            listenToReviews();
 
             // --- Path Collection ---
             const getTasksCollectionRef = (targetUserId) => {
@@ -689,13 +669,11 @@ const exportMyDataAsCsv = async () => {
                 const loadingP = document.getElementById('loading-tasks');
                 if(loadingP) loadingP.style.display = 'none';
 
-                updateMainTaskCount(tasks ? tasks.length : 0);
-                if (!tasks || tasks.length === 0) {
-                    showEmptyTaskIllustration(true);
-                    taskListDiv.innerHTML = '';
+                if (tasks.length === 0) {
+                    taskListDiv.innerHTML = `<div class="text-center p-8 bg-white rounded-lg shadow-md"><h3 class="font-semibold text-lg">Tidak ada tugas!</h3><p class="text-slate-500 mt-1">Tambahkan tugas baru di atas untuk memulai.</p></div>`;
                     return;
                 }
-                showEmptyTaskIllustration(false);
+
                 taskListDiv.innerHTML = tasks.map(task => {
                     const priorityScoreNum = Number(task.priorityScore);
                     const priorityText = isNaN(priorityScoreNum) ? 'N/A' :
@@ -731,6 +709,56 @@ const exportMyDataAsCsv = async () => {
                         </button>
                     </div>`;
                 }).join('');
+            }
+
+            // --- Fungsi Review ---
+            function addReview(text, name, rating) {
+                let reviews = JSON.parse(localStorage.getItem('userReviews')) || [];
+                const newReview = {
+                    name: name,
+                    text: text,
+                    date: new Date().toLocaleDateString('id-ID'),
+                    rating: rating
+                };
+                reviews.push(newReview);
+                localStorage.setItem('userReviews', JSON.stringify(reviews));
+                renderReviews();
+            }
+
+            function renderReviews() {
+                const container = document.getElementById('reviews-container');
+                let reviews = JSON.parse(localStorage.getItem('userReviews')) || [
+                    {name: 'Ahmad S.', text: 'Aplikasi ini sangat membantu saya dalam mengatur prioritas tugas kuliah. Interface-nya simpel dan mudah digunakan!', date: '27/11/2025', rating: 5},
+                    {name: 'Budi R.', text: 'Fitur prioritas berdasarkan deadline dan tingkat kesulitan sangat akurat. Sudah tidak pernah telat submit tugas lagi!', date: '26/11/2025', rating: 5},
+                    {name: 'Citra D.', text: 'Animasi kubus di background-nya keren! Membuat aplikasi terlihat lebih menarik dan tidak membosankan.', date: '25/11/2025', rating: 4}
+                ];
+                container.innerHTML = reviews.map(review => `
+                    <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6 shadow-lg flex-shrink-0 w-80">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">${review.name[0]}</div>
+                            <div class="ml-3">
+                                <h3 class="text-white font-semibold">${review.name}</h3>
+                                <p class="text-slate-300 text-sm">${review.date}</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-200">"${review.text}"</p>
+                        <div class="flex text-yellow-400 mt-2">${'★'.repeat(review.rating || 5)}</div>
+                    </div>
+                `).join('');
+                if (reviews.length > 3) {
+                    container.style.width = `${reviews.length * 320 + (reviews.length - 1) * 24}px`;
+                    startScrolling(reviews);
+                }
+            }
+
+            function startScrolling(reviews) {
+                const container = document.getElementById('reviews-container');
+                let position = 0;
+                const step = 320 + 24; // w-80 + gap-6
+                setInterval(() => {
+                    position = (position + step) % ((reviews.length - 2) * step);
+                    container.style.transform = `translateX(-${position}px)`;
+                }, 4000);
             }
 
             // Slider
@@ -776,29 +804,7 @@ const exportMyDataAsCsv = async () => {
                 }
             });
             
-            const gradientEl = document.querySelector('.gradient');
-            if (gradientEl) {
-                let targetX = window.innerWidth / 2;
-                let targetY = window.innerHeight / 2;
-                let currentX = targetX;
-                let currentY = targetY;
-                document.addEventListener('mousemove', (e) => {
-                    targetX = e.clientX;
-                    targetY = e.clientY;
-                });
-                function animate() {
-                    currentX += (targetX - currentX) * 0.1;
-                    currentY += (targetY - currentY) * 0.1;
-                    gradientEl.style.left = `${(currentX / window.innerWidth) * 100}%`;
-                    gradientEl.style.top = `${(currentY / window.innerHeight) * 100}%`;
-                    requestAnimationFrame(animate);
-                }
-                animate();
-            } else {
-                console.warn("Elemen .gradient tidak ditemukan di halaman.");
-            }
-
-            document.getElementById("theme-toggle").addEventListener("click", () => {
+            safeAddEventListener("theme-toggle", "click", () => {
              document.documentElement.classList.toggle("dark");
 
             // simpan preferensi user
@@ -814,7 +820,107 @@ const exportMyDataAsCsv = async () => {
                 document.documentElement.classList.add("dark");
             }
 
-        }); // Penutup 'DOMContentLoaded'
+            safeAddEventListener('about-link', 'click', (e) => {
+                e.preventDefault();
+                console.log('About link clicked');
+                const modal = document.getElementById('about-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                    console.log('Modal shown');
+                } else {
+                    console.error('About modal not found');
+                }
+            });
+            safeAddEventListener('review-link', 'click', (e) => {
+                e.preventDefault();
+                console.log('Review link clicked');
+                const modal = document.getElementById('review-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                    console.log('Modal shown');
+                } else {
+                    console.error('Review modal not found');
+                }
+            });
+            safeAddEventListener('close-about', 'click', () => {
+                document.getElementById('about-modal').classList.remove('show');
+            });
+            safeAddEventListener('close-about-button', 'click', () => {
+                document.getElementById('about-modal').classList.remove('show');
+            });
+            safeAddEventListener('close-review', 'click', () => {
+                document.getElementById('review-modal').classList.remove('show');
+            });
+            safeAddEventListener('submit-review', 'click', () => {
+                const nameInput = document.querySelector('#review-modal #review-name');
+                const textarea = document.querySelector('#review-modal textarea');
+                const reviewText = textarea.value.trim();
+                const nameText = nameInput.value.trim() || 'Anonim';
+                if (!selectedRating) {
+                    alert('Pilih rating dulu.');
+                    return;
+                }
+                if (reviewText) {
+                    addReview(reviewText, nameText, selectedRating);
+                    nameInput.value = '';
+                    textarea.value = '';
+                    selectedRating = 0;
+                    document.querySelectorAll('#review-modal .star').forEach(s => {
+                        s.classList.add('text-gray-400');
+                        s.classList.remove('text-yellow-400');
+                    });
+                    document.getElementById('review-modal').classList.remove('show');
+                    alert('Terima kasih atas review Anda!');
+                } else {
+                    alert('Tolong isi review terlebih dahulu.');
+                }
+            });
+            
+            // Rating stars
+            document.querySelectorAll('#review-modal .star').forEach(star => {
+                star.addEventListener('click', () => {
+                    selectedRating = parseInt(star.dataset.rating);
+                    document.querySelectorAll('#review-modal .star').forEach(s => {
+                        if (parseInt(s.dataset.rating) <= selectedRating) {
+                            s.classList.add('text-yellow-400');
+                            s.classList.remove('text-gray-400');
+                        } else {
+                            s.classList.add('text-gray-400');
+                            s.classList.remove('text-yellow-400');
+                        }
+                    });
+                });
+            });
+            safeAddEventListener('close-review-button', 'click', () => {
+                document.getElementById('review-modal').classList.remove('show');
+            });
+            safeAddEventListener('tutorial-link', 'click', (e) => {
+                e.preventDefault();
+                console.log('Tutorial link clicked');
+                const modal = document.getElementById('tutorial-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                    console.log('Tutorial modal shown');
+                } else {
+                    console.error('Tutorial modal not found');
+                }
+            });
+            safeAddEventListener('close-tutorial', 'click', () => {
+                document.getElementById('tutorial-modal').classList.remove('show');
+            });
+            safeAddEventListener('close-tutorial-button', 'click', () => {
+                document.getElementById('tutorial-modal').classList.remove('show');
+            });
+            renderReviews();        }); // Penutup 'DOMContentLoaded'
     </script>
+
+    <!-- Bagian Review dari Pengguna -->
+    <div id="reviews-section" class="mt-8 max-w-4xl mx-auto px-4">
+        <h2 class="text-2xl font-bold text-white mb-6 text-center">Review dari Pengguna</h2>
+        <div class="overflow-hidden max-w-[960px] mx-auto">
+            <div id="reviews-container" class="flex gap-6"></div>
+        </div>
+    </div>
+
 </body>
 </html>
