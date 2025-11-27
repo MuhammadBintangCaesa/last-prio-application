@@ -424,7 +424,11 @@
 
             // --- Fungsi Review ---
             function listenToReviews() {
-                renderReviews();
+                const reviewsRef = collection(db, `artifacts/${appId}/reviews`);
+                onSnapshot(reviewsRef, (snapshot) => {
+                    const reviews = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderReviews(reviews);
+                });
             }
 
             // --- Elemen UI ---
@@ -727,25 +731,25 @@ const exportMyDataAsCsv = async () => {
 
             // --- Fungsi Review ---
             function addReview(text, name, rating) {
-                let reviews = JSON.parse(localStorage.getItem('userReviews')) || [];
-                const newReview = {
+                const reviewsRef = collection(db, `artifacts/${appId}/reviews`);
+                addDoc(reviewsRef, {
                     name: name,
                     text: text,
                     date: new Date().toLocaleDateString('id-ID'),
-                    rating: rating
-                };
-                reviews.push(newReview);
-                localStorage.setItem('userReviews', JSON.stringify(reviews));
-                renderReviews();
+                    rating: rating,
+                    timestamp: serverTimestamp()
+                });
             }
 
-            function renderReviews() {
+            function renderReviews(reviews) {
                 const container = document.getElementById('reviews-container');
-                let reviews = JSON.parse(localStorage.getItem('userReviews')) || [
-                    {name: 'Ahmad S.', text: 'Aplikasi ini sangat membantu saya dalam mengatur prioritas tugas kuliah. Interface-nya simpel dan mudah digunakan!', date: '27/11/2025', rating: 5},
-                    {name: 'Budi R.', text: 'Fitur prioritas berdasarkan deadline dan tingkat kesulitan sangat akurat. Sudah tidak pernah telat submit tugas lagi!', date: '26/11/2025', rating: 5},
-                    {name: 'Citra D.', text: 'Animasi kubus di background-nya keren! Membuat aplikasi terlihat lebih menarik dan tidak membosankan.', date: '25/11/2025', rating: 4}
-                ];
+                if (reviews.length === 0) {
+                    reviews = [
+                        {name: 'Ahmad S.', text: 'Aplikasi ini sangat membantu saya dalam mengatur prioritas tugas kuliah. Interface-nya simpel dan mudah digunakan!', date: '27/11/2025', rating: 5},
+                        {name: 'Budi R.', text: 'Fitur prioritas berdasarkan deadline dan tingkat kesulitan sangat akurat. Sudah tidak pernah telat submit tugas lagi!', date: '26/11/2025', rating: 5},
+                        {name: 'Citra D.', text: 'Animasi kubus di background-nya keren! Membuat aplikasi terlihat lebih menarik dan tidak membosankan.', date: '25/11/2025', rating: 4}
+                    ];
+                }
                 container.innerHTML = reviews.map(review => `
                     <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6 shadow-lg flex-shrink-0 w-80">
                         <div class="flex items-center mb-4">
@@ -958,7 +962,7 @@ const exportMyDataAsCsv = async () => {
                 }
             });
 
-            renderReviews();        }); // Penutup 'DOMContentLoaded'
+        }); // Penutup 'DOMContentLoaded'
     </script>
 
     <!-- Bagian Review dari Pengguna -->
