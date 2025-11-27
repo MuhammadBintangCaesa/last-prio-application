@@ -17,11 +17,6 @@
         .priority-medium { background-color: #FEF3C7; color: #92400E; }
         .priority-low { background-color: #D1FAE5; color: #065F46; }
 
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         #app-container {
             position: relative;
             z-index: 1;
@@ -30,79 +25,244 @@
             padding: 2rem 1rem 6rem;
         }
 
-        .gradient {
-            --size: 750px;
-            --speed: 50s;
-            --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 0;
-            pointer-events: none;
-            width: var(--size);
-            height: var(--size);
-            filter: blur(calc(var(--size) / 8));
-            background-image: radial-gradient(circle at 30% 25%,
-            rgba(56,189,248,0.95) 0%,
-            rgba(99,102,241,0.9) 35%,
-            rgba(16,185,129,0.88) 70%);
-            animation: rotate var(--speed) var(--easing) alternate infinite;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            transition: top 0.6s ease-out, left 0.6s ease-out;
-        }
-
         @media (min-width: 720px) {
-            .gradient { --size: 500px; }
+            .cube-container .container {
+                width: 100%;
+            }
         }
 
         body {
-            background-color: #071c39 !important;
+            background-color: #000 !important;
             position: relative; 
             inset: 0;
             display: block; 
             min-height: 100vh;
             overflow-y: auto; 
         }
+
+        #main-content {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.07);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+        /* Animasi Kubus */
+        .cube-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .cube-container .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-35deg);
+            width: 100%;
+        }
+        .cube-container .container .box {
+            position: relative;
+            left: -100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: calc(100% + 400px);
+            -webkit-box-reflect: below 1px linear-gradient(transparent, #000);
+            animation: animatesurface 1.5s ease-in-out infinite;
+        }
+        @keyframes animatesurface {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-200px);
+            }
+        }
+        .cube-container .container .box .cube {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            background: #03e9f4;
+            box-shadow: 0 0 5px rgba(3,233,244,1),
+                        0 0 25px rgba(3,233,244,1),
+                        0 0 50px rgba(3,233,244,1),
+                        0 0 150px rgba(3,233,244,1);
+            transform-origin: bottom right;
+            animation: animate 1.5s ease-in-out infinite;
+        }
+        @keyframes animate {
+            0% { 
+                transform: rotate(0deg);
+            }
+            60%, 70%, 80%, 100% {
+                transform: rotate(90deg);
+            }
+            65% {
+                transform: rotate(85deg);
+            }
+            75% {
+                transform: rotate(87.5deg);
+            }
+        }
+        /* Navbar */
+        .navbar {
+            width: 100%;
+            background: rgba(0,0,0,0.1);
+            padding: 20px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .navbar a:hover {
+            background: rgba(255,255,255,0.1);
+            color: #03e9f4;
+            transform: translateY(-2px);
+        }
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            text-align: center;
+        }
+        .tutorial-modal .modal-content {
+            max-width: 90vw !important;
+        }
+        .modal-content h2 {
+            margin-bottom: 20px;
+        }
+        .modal-content p {
+            margin-bottom: 20px;
+        }
+        .modal-content textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .modal-content button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #03e9f4;
+            color: #000;
+            cursor: pointer;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        #reviews-container {
+            transition: transform 1s ease;
+        }
+
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
-    <div class="gradient" aria-hidden="true"></div>
+<body class="text-slate-800">
+    <div class="cube-container">
+        <div class="container">
+            <div class="box">
+                <div class="cube"></div>
+            </div>
+        </div>
+    </div>
     <div id="app-container" class="max-w-4xl mx-auto p-4 md:p-8">
-        <header id= "header" class="mb-8 text-center text-white space-800">
-            <h1 class="text-4xl md:text-5xl font-extrabold fade-up">P . R . I . O</h1>
-            <img src="image/prio.back-removebg-preview.png" 
-             alt="gambar logo prio" 
-             class="mx-auto my-4 w-48 h-48">
-            <p class="text-white-400">Asisten cerdas untuk memprioritaskan tugas kuliah Anda.</p>
+        <nav class="navbar">
+            <div class="flex items-center gap-4">
+                <img src="image/prio.back-removebg-preview.png" alt="logo" class="h-16">
+                <span class="text-2xl font-bold text-white">MyPrio</span>
+            </div>
+            <!-- Hamburger Menu Button for Mobile -->
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex gap-4">
+                <a href="#" id="about-link">Tentang Kami</a>
+                <a href="#" id="review-link">Review Web</a>
+                <a href="#" id="tutorial-link">Tutorial</a>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden absolute top-full left-0 w-full bg-black/90 backdrop-blur-lg border-t border-white/20 hidden flex-col gap-4 p-4">
+                <a href="#" id="about-link-mobile" class="text-white text-center py-2">Tentang Kami</a>
+                <a href="#" id="review-link-mobile" class="text-white text-center py-2">Review Web</a>
+                <a href="#" id="tutorial-link-mobile" class="text-white text-center py-2">Tutorial</a>
+            </div>
+        </nav>
+
+        <br>
+        <header id= "header" class="mb-8 text-center text-white">
+            <p class="text-lg text-slate-300">Bantu kamu mengelola dan memprioritaskan tugas dengan cerdas</p>
         </header>
         
         <!-- Elemen UI untuk Login dan Logout -->
-        <div id="auth-container" class="mb-6 text-center">
-            <!-- LOGIN VIEW -->
-            <div id="login-view" class="flex items-center justify-center py-12">
-                <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 shadow-lg w-full sm:w-[420px] text-center transition-all duration-500 hover:scale-[1.02]">
-                    <h2 class="text-2xl font-bold text-white mb-2">
-                        Selamat Datang di <span class="text-blue-300">Prio</span>
-                    </h2>
-                    <p class="text-slate-300 mb-6 text-sm">
-                        Kelola & prioritaskan tugasmu dengan cerdas
-                    </p>
-                    <div class="flex flex-col gap-4">
-                        <button id="login-button" class="bg-white text-slate-700 font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg hover:bg-slate-100 transition-all flex items-center justify-center gap-2 w-full">
-                            <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5">
-                            Login dengan Google
-                        </button>
-                        <button id="guest-login-button" class="bg-gradient-to-r from-blue-600 to-indigo-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:from-blue-700 hover:to-indigo-600 transition-all w-full">
-                            Masuk sebagai Tamu
-                        </button>
-                    </div>
-                    <p class="text-xs text-slate-400 mt-6">
-                        Dengan login, Anda menyetujui
-                        <button id="privacy-btn" class="text-blue-300 hover:underline">kebijakan privasi</button>.
-                    </p>
-                </div>
+       <!-- LOGIN VIEW -->
+        <div id="login-view" class="flex items-center justify-center py-12">
+            <div class="bg-white/40 backdrop-blur-lg border border-white/20 rounded-2xl p-8 shadow-lg w-full sm:w-[420px] text-center transition-all duration-500 hover:scale-[1.02]">
+            <h2 class="text-2xl font-bold text-white mb-2">
+            Selamat Datang di <span class="text-blue-300">Prio</span>
+            </h2>
+            <p class="text-slate-300 mb-6 text-sm">
+            Kelola & prioritaskan tugasmu dengan cerdas
+            </p>
+            <div class="flex flex-col gap-4">
+            <button id="login-button" class="bg-white text-slate-700 font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg hover:bg-slate-100 transition-all flex items-center justify-center gap-2 w-full">
+                <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5">
+                Login dengan Google
+            </button>
+            <button id="guest-login-button" class="bg-gradient-to-r from-blue-600 to-indigo-500 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:from-blue-700 hover:to-indigo-600 transition-all w-full">
+                Masuk sebagai Tamu
+            </button>
             </div>
+            <p class="text-xs text-slate-400 mt-6">
+            Dengan login, Anda menyetujui
+            <button id="privacy-btn" class="text-blue-300 hover:underline">kebijakan privasi</button>.
+            </p>
+        </div>
+        </div>
+
 
             <!-- MODAL KEBIJAKAN PRIVASI -->
             <div id="privacy-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
@@ -131,12 +291,17 @@
         </div>
 
         <!-- Konten Utama -->
-        <main id="main-content" class="hidden">
+    <main id="main-content" class="hidden min-h-screen bg-transparent py-10 px-4 max-w-6xl mx-auto">
             <div class="bg-white p-6 rounded-xl shadow-md mb-8">
                 <h2 class="text-xl font-semibold mb-4">Tambah Tugas (Manual)</h2>
                 <!-- Form input -->
                 <form id="task-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="md:col-span-2"><label for="task-name" class="block text-sm font-medium text-slate-700 mb-1">Nama Dan Mata Kuliah</label><input type="text" id="task-name" placeholder="Contoh: Laporan Praktikum Jaringan Komputer" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></div>
+                    <input type="text" class="task-name w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh → Tugas 1">
+                    <input type="text" class="task-name w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh → Tugas 2">
+                    <input type="text" class="task-name w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh → Tugas 3">
+                    <input type="text" class="task-name w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh → Tugas 4">
+                    <input type="text" class="task-name w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh → Tugas 5">
+                    <input type="text" class="task-name w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Contoh → Tugas 6">
                     <div><label for="task-urgency" class="block text-sm font-medium text-slate-700 mb-1">Urgensi (1-5)</label><input type="range" id="task-urgency" min="1" max="5" value="3" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"><span id="urgency-value" class="text-sm text-slate-500">3 (Sedang)</span></div>
                     <div><label for="task-importance" class="block text-sm font-medium text-slate-700 mb-1">Pentingnya (1-5)</label><input type="range" id="task-importance" min="1" max="5" value="3" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"><span id="importance-value" class="text-sm text-slate-500">3 (Cukup Penting)</span></div>
                     <div class="md:col-span-2"><label for="task-deadline" class="block text-sm font-medium text-slate-700 mb-1">Deadline Tugas (Tanggal)</label><input type="date" id="task-deadline" required class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></div>
@@ -164,6 +329,56 @@
             </div>
         </main>
     </div>
+</body>
+</html>
+
+
+    <div id="about-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-about">&times;</span>
+            <h2>Tentang Kami</h2>
+            <p>Kami adalah mahasiswa dari Universitas Gunadarma yang mengembangkan aplikasi Prio untuk membantu mahasiswa dalam memprioritaskan tugas kuliah dengan cerdas.</p>
+            <button id="close-about-button">Tutup</button>
+        </div>
+    </div>
+
+    <div id="review-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-review">&times;</span>
+            <h2>Berikan Review Web Kita</h2>
+            <input type="text" placeholder="Nama Anda" id="review-name" class="w-full px-3 py-2 border border-slate-300 rounded-lg mb-4"><br>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-2">Rating:</label>
+                <div class="stars flex text-2xl">
+                    <span class="star cursor-pointer text-gray-400" data-rating="1">★</span>
+                    <span class="star cursor-pointer text-gray-400" data-rating="2">★</span>
+                    <span class="star cursor-pointer text-gray-400" data-rating="3">★</span>
+                    <span class="star cursor-pointer text-gray-400" data-rating="4">★</span>
+                    <span class="star cursor-pointer text-gray-400" data-rating="5">★</span>
+                </div>
+            </div>
+            <textarea placeholder="Tulis review Anda di sini..." class="w-full px-3 py-2 border border-slate-300 rounded-lg mb-4"></textarea><br>
+            <button id="submit-review">Kirim Review</button>
+            <button id="close-review-button">Tutup</button>
+        </div>
+    </div>
+
+    <div id="tutorial-modal" class="modal tutorial-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-tutorial">&times;</span>
+            <h2>Tutorial Penggunaan</h2>
+            <div class="mt-6 rounded-xl overflow-hidden border border-white/20 shadow-inner">
+                <iframe 
+                    class="w-full aspect-video rounded-xl"
+                    src="https://www.youtube.com/embed/yBLAbgD-AlU"
+                    title="Video intro"
+                    allow="accelerometer; autoplay=0; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <button id="close-tutorial-button">Tutup</button>
+        </div>
+    </div>
 
     <!-- Firebase SDK -->
     <script type="module">
@@ -188,6 +403,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log("[DEBUG] Halaman HTML selesai dimuat. Memulai skrip.");
 
+            let selectedRating = 0;
+
             // Konfigurasi Firebase
             const firebaseConfig = {
                 apiKey: "AIzaSyC4WwUhxG5XROTr5lSHvhDS4zj2Lqmw1U0",
@@ -204,6 +421,11 @@
             db = getFirestore(app);
             auth = getAuth(app);
             console.log("[DEBUG] Firebase diinisialisasi.");
+
+            // --- Fungsi Review ---
+            function listenToReviews() {
+                renderReviews();
+            }
 
             // --- Elemen UI ---
             const loginView = document.getElementById('login-view');
@@ -246,6 +468,8 @@
                     renderTasks([]);
                 }
             });
+
+            listenToReviews();
 
             // --- Path Collection ---
             const getTasksCollectionRef = (targetUserId) => {
@@ -297,40 +521,53 @@
                  }
              };
 
-            // --- Submit Form (diperbarui) ---
-            taskForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                if (!userId) {
-                    alert("Error: Anda tidak terautentikasi.");
-                    return;
-                }
+taskForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!userId) {
+        alert("Error: Anda tidak terautentikasi.");
+        return;
+    }
 
-                const taskName = document.getElementById('task-name').value;
-                const urgency = parseInt(document.getElementById('task-urgency').value);
-                const importance = parseInt(document.getElementById('task-importance').value); // Menggunakan importance
-                const time = parseFloat(document.getElementById('task-time').value);
-                const deadlineValue = document.getElementById('task-deadline').value;
-                // Konversi tanggal ke format yang benar untuk Firestore Timestamp
-                const deadlineDate = deadlineValue ? new Date(deadlineValue) : null;
-                // Penting: Set waktu ke akhir hari (23:59:59) agar deadline "hari ini" valid
-                if (deadlineDate) deadlineDate.setHours(23, 59, 59);
+    const taskInputs = document.querySelectorAll('.task-name');
+    const urgency = parseInt(document.getElementById('task-urgency').value);
+    const importance = parseInt(document.getElementById('task-importance').value);
+    const time = parseFloat(document.getElementById('task-time').value);
+    const deadlineValue = document.getElementById('task-deadline').value;
 
-                const taskData = {
-                    name: taskName,
-                    urgency,
-                    importance, // Menggunakan importance
-                    time,
-                    // Simpan sebagai Firestore Timestamp
-                    deadline: deadlineDate ? serverTimestamp(deadlineDate) : null 
-                };
+    const deadlineDate = deadlineValue ? new Date(deadlineValue) : null;
+    if (deadlineDate) deadlineDate.setHours(23, 59, 59);
 
-                const success = await addNewTask(taskData);
-                if (success) {
-                    e.target.reset();
-                    document.getElementById('urgency-value').textContent = '3 (Sedang)';
-                    document.getElementById('importance-value').textContent = '3 (Cukup Penting)';
-                }
-            });
+    let hasTask = false;
+
+    // Loop semua input nama tugas
+    for (const input of taskInputs) {
+        const name = input.value.trim();
+        if (name === "") continue;
+
+        hasTask = true;
+
+        const taskData = {
+            name,
+            urgency,
+            importance,
+            time,
+            deadline: deadlineDate || null
+        };
+
+        await addNewTask(taskData);
+    }
+
+    if (!hasTask) {
+        alert("Minimal isi 1 tugas.");
+        return;
+    }
+
+    // Reset form
+    e.target.reset();
+    document.getElementById('urgency-value').textContent = '3 (Sedang)';
+    document.getElementById('importance-value').textContent = '3 (Cukup Penting)';
+});
+
 
             // --- Login/Logout ---
             const signInWithGoogle = () => signInWithPopup(auth, new GoogleAuthProvider()).catch(err => console.error(err));
@@ -340,68 +577,92 @@
             safeAddEventListener('guest-login-button', 'click', signInAsGuest);
             safeAddEventListener('logout-button', 'click', doSignOut);
 
-            // --- FUNGSI EKSPOR BARU (NON-ADMIN) ---
-            const exportMyDataAsCsv = async () => {
-                if (!userId) {
-                    alert("Silakan login terlebih dahulu.");
-                    return;
-                }
-                console.log(`[DEBUG] Memulai ekspor untuk user ID: ${userId}`);
-                
-                try {
-                    const tasksCollectionRef = getTasksCollectionRef(userId);
-                    const tasksSnapshot = await getDocs(query(tasksCollectionRef));
-                    const tasks = [];
-                    tasksSnapshot.forEach(doc => tasks.push({ id: doc.id, ...doc.data() }));
+            // --- FUNGSI EKSPOR CSV FIX (NON-ADMIN) ---
+const exportMyDataAsCsv = async () => {
+    if (!userId) {
+        alert("Silakan login terlebih dahulu.");
+        return;
+    }
 
-                    if (tasks.length === 0) {
-                        alert("Anda tidak memiliki data tugas untuk diunduh.");
-                        return;
-                    }
+    try {
+        const tasksCollectionRef = getTasksCollectionRef(userId);
+        const tasksSnapshot = await getDocs(query(tasksCollectionRef));
 
-                    const headers = ['ID Tugas', 'Nama Tugas', 'Urgensi', 'Pentingnya', 'Estimasi Waktu (Jam)', 'Deadline', 'Skor Prioritas', 'Status', 'Dibuat Tanggal'];
-                    
-                    const rows = tasks.map(task => {
-                        const taskName = (task.name || '').includes(',') ? `"${task.name}"` : task.name;
-                        // Format tanggal deadline dan tanggal dibuat
-                        const deadline = task.deadline ? new Date(task.deadline.seconds * 1000).toLocaleDateString('id-ID') : "N/A";
-                        const createdAt = task.createdAt ? new Date(task.createdAt.seconds * 1000).toLocaleString('id-ID') : 'N/A';
-                        
-                        return [
-                            task.id, 
-                            taskName, 
-                            task.urgency, 
-                            task.importance, 
-                            task.time, 
-                            deadline, 
-                            task.priorityScore, 
-                            task.status, 
-                            createdAt
-                        ].join(',');
-                    });
+        const tasks = [];
+        tasksSnapshot.forEach(doc => tasks.push({ id: doc.id, ...doc.data() }));
 
-                    const csvContent = [headers.join(','), ...rows].join('\n');
-                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                    const link = document.createElement("a");
-                    const url = URL.createObjectURL(blob);
-                    const date = new Date().toISOString().slice(0, 10);
-                    link.setAttribute("href", url);
-                    link.setAttribute("download", `prio_data_saya_${date}.csv`);
-                    link.style.visibility = 'hidden';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    console.log("[DEBUG] Ekspor selesai.");
+        if (tasks.length === 0) {
+            alert("Anda tidak memiliki data tugas.");
+            return;
+        }
 
-                } catch (error) {
-                    console.error("[DEBUG] Gagal mengunduh data:", error);
-                    alert("Gagal mengunduh data: " + error.message);
-                }
-            };
-            // Pasang listener ke tombol download yang baru
+        // --- 🔥 SORT BIAR SESUAI UI (priorityScore terbesar → terkecil)
+        tasks.sort((a, b) => (b.priorityScore ?? 0) - (a.priorityScore ?? 0));
+
+        // --- Fungsi escape agar koma tidak rusak CSV
+        const escapeCSV = value => {
+            if (value == null) return "";
+            const str = String(value);
+            return (str.includes(",") || str.includes('"')) 
+                ? `"${str.replace(/"/g, '""')}"`
+                : str;
+        };
+
+        // --- Header CSV
+        const headers = [
+            "ID Tugas",
+            "Nama Tugas",
+            "Urgensi",
+            "Pentingnya",
+            "Estimasi Waktu",
+            "Deadline",
+            "Skor Prioritas",
+            "Status",
+            "Dibuat"
+        ];
+
+        // --- Buat baris data
+        const rows = tasks.map(task => {
+            const deadline = task.deadline
+                ? new Date(task.deadline.seconds * 1000).toLocaleDateString("id-ID")
+                : "N/A";
+
+            const createdAt = task.createdAt
+                ? new Date(task.createdAt.seconds * 1000).toLocaleString("id-ID")
+                : "N/A";
+
+            return [
+                escapeCSV(task.id),
+                escapeCSV(task.name),
+                escapeCSV(task.urgency),
+                escapeCSV(task.importance),
+                escapeCSV(task.time),
+                escapeCSV(deadline),
+                escapeCSV(task.priorityScore),
+                escapeCSV(task.status),
+                escapeCSV(createdAt)
+            ].join(",");
+        });
+
+        // Gabungkan CSV
+        const csvContent = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+
+        const date = new Date().toISOString().slice(0, 10);
+        link.download = `prio_data_saya_${date}.csv`;
+
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+    } catch (error) {
+        console.error("[DEBUG] CSV Export Error:", error);
+        alert("Gagal mengunduh data.");
+    }
+};
             safeAddEventListener('download-my-data-button', 'click', exportMyDataAsCsv);
-
-
             // --- Baca & Tampilkan Data ---
             function listenToTasks() {
                 if (!userId) return;
@@ -438,7 +699,7 @@
                     const scoreDisplay = isNaN(priorityScoreNum) ? 'NaN' : priorityScoreNum.toFixed(1);
                     
                     // Format deadline untuk ditampilkan
-                    const deadlineText = task.deadline ? new Date(task.deadline.seconds * 1000).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}) : 'Tidak Ditentukan';
+                const deadlineText = task.deadline ? new Date(task.deadline).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}) : 'Tidak Ditentukan';
 
                     return `
                     <div class="task-card bg-white p-4 rounded-xl shadow-md flex items-start gap-4 ${task.status === 'completed' ? 'opacity-60' : ''}">
@@ -462,6 +723,56 @@
                         </button>
                     </div>`;
                 }).join('');
+            }
+
+            // --- Fungsi Review ---
+            function addReview(text, name, rating) {
+                let reviews = JSON.parse(localStorage.getItem('userReviews')) || [];
+                const newReview = {
+                    name: name,
+                    text: text,
+                    date: new Date().toLocaleDateString('id-ID'),
+                    rating: rating
+                };
+                reviews.push(newReview);
+                localStorage.setItem('userReviews', JSON.stringify(reviews));
+                renderReviews();
+            }
+
+            function renderReviews() {
+                const container = document.getElementById('reviews-container');
+                let reviews = JSON.parse(localStorage.getItem('userReviews')) || [
+                    {name: 'Ahmad S.', text: 'Aplikasi ini sangat membantu saya dalam mengatur prioritas tugas kuliah. Interface-nya simpel dan mudah digunakan!', date: '27/11/2025', rating: 5},
+                    {name: 'Budi R.', text: 'Fitur prioritas berdasarkan deadline dan tingkat kesulitan sangat akurat. Sudah tidak pernah telat submit tugas lagi!', date: '26/11/2025', rating: 5},
+                    {name: 'Citra D.', text: 'Animasi kubus di background-nya keren! Membuat aplikasi terlihat lebih menarik dan tidak membosankan.', date: '25/11/2025', rating: 4}
+                ];
+                container.innerHTML = reviews.map(review => `
+                    <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6 shadow-lg flex-shrink-0 w-80">
+                        <div class="flex items-center mb-4">
+                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">${review.name[0]}</div>
+                            <div class="ml-3">
+                                <h3 class="text-white font-semibold">${review.name}</h3>
+                                <p class="text-slate-300 text-sm">${review.date}</p>
+                            </div>
+                        </div>
+                        <p class="text-slate-200">"${review.text}"</p>
+                        <div class="flex text-yellow-400 mt-2">${'★'.repeat(review.rating || 5)}</div>
+                    </div>
+                `).join('');
+                if (reviews.length > 3) {
+                    container.style.width = `${reviews.length * 320 + (reviews.length - 1) * 24}px`;
+                    startScrolling(reviews);
+                }
+            }
+
+            function startScrolling(reviews) {
+                const container = document.getElementById('reviews-container');
+                let position = 0;
+                const step = 320 + 24; // w-80 + gap-6
+                setInterval(() => {
+                    position = (position + step) % ((reviews.length - 2) * step);
+                    container.style.transform = `translateX(-${position}px)`;
+                }, 4000);
             }
 
             // Slider
@@ -507,30 +818,156 @@
                 }
             });
             
-            const gradientEl = document.querySelector('.gradient');
-            if (gradientEl) {
-                let targetX = window.innerWidth / 2;
-                let targetY = window.innerHeight / 2;
-                let currentX = targetX;
-                let currentY = targetY;
-                document.addEventListener('mousemove', (e) => {
-                    targetX = e.clientX;
-                    targetY = e.clientY;
-                });
-                function animate() {
-                    currentX += (targetX - currentX) * 0.1;
-                    currentY += (targetY - currentY) * 0.1;
-                    gradientEl.style.left = `${(currentX / window.innerWidth) * 100}%`;
-                    gradientEl.style.top = `${(currentY / window.innerHeight) * 100}%`;
-                    requestAnimationFrame(animate);
-                }
-                animate();
+            safeAddEventListener("theme-toggle", "click", () => {
+             document.documentElement.classList.toggle("dark");
+
+            // simpan preferensi user
+            if (document.documentElement.classList.contains("dark")) {
+                localStorage.setItem("theme", "dark");
             } else {
-                console.warn("Elemen .gradient tidak ditemukan di halaman.");
+                localStorage.setItem("theme", "light");
+            }
+        });
+
+            // load preferensi saat halaman buka
+            if (localStorage.getItem("theme") === "dark") {
+                document.documentElement.classList.add("dark");
             }
 
-        }); // Penutup 'DOMContentLoaded'
+            safeAddEventListener('about-link', 'click', (e) => {
+                e.preventDefault();
+                console.log('About link clicked');
+                const modal = document.getElementById('about-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                    console.log('Modal shown');
+                } else {
+                    console.error('About modal not found');
+                }
+            });
+            safeAddEventListener('review-link', 'click', (e) => {
+                e.preventDefault();
+                console.log('Review link clicked');
+                const modal = document.getElementById('review-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                    console.log('Modal shown');
+                } else {
+                    console.error('Review modal not found');
+                }
+            });
+            safeAddEventListener('close-about', 'click', () => {
+                document.getElementById('about-modal').classList.remove('show');
+            });
+            safeAddEventListener('close-about-button', 'click', () => {
+                document.getElementById('about-modal').classList.remove('show');
+            });
+            safeAddEventListener('close-review', 'click', () => {
+                document.getElementById('review-modal').classList.remove('show');
+            });
+            safeAddEventListener('submit-review', 'click', () => {
+                const nameInput = document.querySelector('#review-modal #review-name');
+                const textarea = document.querySelector('#review-modal textarea');
+                const reviewText = textarea.value.trim();
+                const nameText = nameInput.value.trim() || 'Anonim';
+                if (!selectedRating) {
+                    alert('Pilih rating dulu.');
+                    return;
+                }
+                if (reviewText) {
+                    addReview(reviewText, nameText, selectedRating);
+                    nameInput.value = '';
+                    textarea.value = '';
+                    selectedRating = 0;
+                    document.querySelectorAll('#review-modal .star').forEach(s => {
+                        s.classList.add('text-gray-400');
+                        s.classList.remove('text-yellow-400');
+                    });
+                    document.getElementById('review-modal').classList.remove('show');
+                    alert('Terima kasih atas review Anda!');
+                } else {
+                    alert('Tolong isi review terlebih dahulu.');
+                }
+            });
+            
+            // Rating stars
+            document.querySelectorAll('#review-modal .star').forEach(star => {
+                star.addEventListener('click', () => {
+                    selectedRating = parseInt(star.dataset.rating);
+                    document.querySelectorAll('#review-modal .star').forEach(s => {
+                        if (parseInt(s.dataset.rating) <= selectedRating) {
+                            s.classList.add('text-yellow-400');
+                            s.classList.remove('text-gray-400');
+                        } else {
+                            s.classList.add('text-gray-400');
+                            s.classList.remove('text-yellow-400');
+                        }
+                    });
+                });
+            });
+            safeAddEventListener('close-review-button', 'click', () => {
+                document.getElementById('review-modal').classList.remove('show');
+            });
+            safeAddEventListener('tutorial-link', 'click', (e) => {
+                e.preventDefault();
+                console.log('Tutorial link clicked');
+                const modal = document.getElementById('tutorial-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                    console.log('Tutorial modal shown');
+                } else {
+                    console.error('Tutorial modal not found');
+                }
+            });
+            safeAddEventListener('close-tutorial', 'click', () => {
+                document.getElementById('tutorial-modal').classList.remove('show');
+            });
+            safeAddEventListener('close-tutorial-button', 'click', () => {
+                document.getElementById('tutorial-modal').classList.remove('show');
+            });
+
+            // Mobile menu toggle
+            safeAddEventListener('mobile-menu-button', 'click', () => {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Mobile menu links
+            safeAddEventListener('about-link-mobile', 'click', (e) => {
+                e.preventDefault();
+                document.getElementById('mobile-menu').classList.add('hidden');
+                const modal = document.getElementById('about-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                }
+            });
+            safeAddEventListener('review-link-mobile', 'click', (e) => {
+                e.preventDefault();
+                document.getElementById('mobile-menu').classList.add('hidden');
+                const modal = document.getElementById('review-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                }
+            });
+            safeAddEventListener('tutorial-link-mobile', 'click', (e) => {
+                e.preventDefault();
+                document.getElementById('mobile-menu').classList.add('hidden');
+                const modal = document.getElementById('tutorial-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                }
+            });
+
+            renderReviews();        }); // Penutup 'DOMContentLoaded'
     </script>
+
+    <!-- Bagian Review dari Pengguna -->
+    <div id="reviews-section" class="mt-8 max-w-4xl mx-auto px-4">
+        <h2 class="text-2xl font-bold text-white mb-6 text-center">Review dari Pengguna</h2>
+        <div class="overflow-hidden max-w-[960px] mx-auto">
+            <div id="reviews-container" class="flex gap-6"></div>
+        </div>
+    </div>
+
 </body>
 </html>
-
