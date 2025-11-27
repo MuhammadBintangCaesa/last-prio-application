@@ -120,6 +120,7 @@
             align-items: center;
             border-bottom: 1px solid rgba(255,255,255,0.2);
             backdrop-filter: blur(10px);
+            position: relative;
         }
         .navbar a {
             color: #fff;
@@ -211,10 +212,23 @@
                 <img src="image/prio.back-removebg-preview.png" alt="logo" class="h-16">
                 <span class="text-2xl font-bold text-white">MyPrio</span>
             </div>
-            <div class="flex gap-4">
+            <!-- Hamburger Menu Button for Mobile -->
+            <button id="mobile-menu-button" class="md:hidden text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex gap-4">
                 <a href="#" id="about-link">Tentang Kami</a>
                 <a href="#" id="review-link">Review Web</a>
                 <a href="#" id="tutorial-link">Tutorial</a>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden absolute top-full left-0 w-full bg-black/90 backdrop-blur-lg border-t border-white/20 hidden flex-col gap-4 p-4">
+                <a href="#" id="about-link-mobile" class="text-white text-center py-2">Tentang Kami</a>
+                <a href="#" id="review-link-mobile" class="text-white text-center py-2">Review Web</a>
+                <a href="#" id="tutorial-link-mobile" class="text-white text-center py-2">Tutorial</a>
             </div>
         </nav>
 
@@ -911,6 +925,39 @@ const exportMyDataAsCsv = async () => {
             safeAddEventListener('close-tutorial-button', 'click', () => {
                 document.getElementById('tutorial-modal').classList.remove('show');
             });
+
+            // Mobile menu toggle
+            safeAddEventListener('mobile-menu-button', 'click', () => {
+                const mobileMenu = document.getElementById('mobile-menu');
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Mobile menu links
+            safeAddEventListener('about-link-mobile', 'click', (e) => {
+                e.preventDefault();
+                document.getElementById('mobile-menu').classList.add('hidden');
+                const modal = document.getElementById('about-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                }
+            });
+            safeAddEventListener('review-link-mobile', 'click', (e) => {
+                e.preventDefault();
+                document.getElementById('mobile-menu').classList.add('hidden');
+                const modal = document.getElementById('review-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                }
+            });
+            safeAddEventListener('tutorial-link-mobile', 'click', (e) => {
+                e.preventDefault();
+                document.getElementById('mobile-menu').classList.add('hidden');
+                const modal = document.getElementById('tutorial-modal');
+                if (modal) {
+                    modal.classList.add('show');
+                }
+            });
+
             renderReviews();        }); // Penutup 'DOMContentLoaded'
     </script>
 
