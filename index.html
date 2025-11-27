@@ -726,50 +726,86 @@ const exportMyDataAsCsv = async () => {
             }
 
             // --- Fungsi Review ---
-            function addReview(text, name, rating) {
-                let reviews = JSON.parse(localStorage.getItem('userReviews')) || [];
-                const newReview = {
-                    name: name,
-                    text: text,
-                    date: new Date().toLocaleDateString('id-ID'),
-                    rating: rating
-                };
-                reviews.push(newReview);
-                localStorage.setItem('userReviews', JSON.stringify(reviews));
-                renderReviews();
+            let scrollInterval; // Variabel untuk menyimpan interval ID
+            let unsubscribeReviews; // Untuk unsubscribe listener
+
+            function listenToReviews() {
+                const reviewsCollectionRef = collection(db, `artifacts/${appId}/reviews`);
+                unsubscribeReviews = onSnapshot(reviewsCollectionRef, (snapshot) => {
+                    const reviews = [];
+                    snapshot.forEach(doc => {
+                        reviews.push({ id: doc.id, ...doc.data() });
+                    });
+                    // Sort by date descending (newest first)
+                    reviews.sort((a, b) => new Date(b.createdAt?.toDate?.() || b.date) - new Date(a.createdAt?.toDate?.() || a.date));
+                    renderReviews(reviews);
+                }, (error) => {
+                    console.error("Error listening to reviews:", error);
+                });
             }
 
-            function renderReviews() {
+            async function addReview(text, name, rating) {
+                try {
+                    const reviewsCollectionRef = collection(db, `artifacts/${appId}/reviews`);
+                    await addDoc(reviewsCollectionRef, {
+                        name: name,
+                        text: text,
+                        rating: rating,
+                        createdAt: serverTimestamp()
+                    });
+                    console.log("Review added successfully");
+                } catch (error) {
+                    console.error("Error adding review:", error);
+                    alert("Gagal menambahkan review: " + error.message);
+                }
+            }
+
+            function renderReviews(reviews) {
                 const container = document.getElementById('reviews-container');
-                let reviews = JSON.parse(localStorage.getItem('userReviews')) || [
-                    {name: 'Ahmad S.', text: 'Aplikasi ini sangat membantu saya dalam mengatur prioritas tugas kuliah. Interface-nya simpel dan mudah digunakan!', date: '27/11/2025', rating: 5},
-                    {name: 'Budi R.', text: 'Fitur prioritas berdasarkan deadline dan tingkat kesulitan sangat akurat. Sudah tidak pernah telat submit tugas lagi!', date: '26/11/2025', rating: 5},
-                    {name: 'Citra D.', text: 'Animasi kubus di background-nya keren! Membuat aplikasi terlihat lebih menarik dan tidak membosankan.', date: '25/11/2025', rating: 4}
-                ];
+                if (!reviews || reviews.length === 0) {
+                    reviews = [
+                        {name: 'Ahmad S.', text: 'Aplikasi ini sangat membantu saya dalam mengatur prioritas tugas kuliah. Interface-nya simpel dan mudah digunakan!', date: '27/11/2025', rating: 5},
+                        {name: 'Budi R.', text: 'Fitur prioritas berdasarkan deadline dan tingkat kesulitan sangat akurat. Sudah tidak pernah telat submit tugas lagi!', date: '26/11/2025', rating: 5},
+                        {name: 'Citra D.', text: 'Animasi kubus di background-nya keren! Membuat aplikasi terlihat lebih menarik dan tidak membosankan.', date: '25/11/2025', rating: 4},
+                        {name: 'Dewi K.', text: 'Prioritas tugas berdasarkan algoritma yang cerdas, sangat membantu mahasiswa seperti saya!', date: '24/11/2025', rating: 5},
+                        {name: 'Eko P.', text: 'UI/UX nya bagus, mudah digunakan. Fitur download data juga berguna.', date: '23/11/2025', rating: 4}
+                    ];
+                }
                 container.innerHTML = reviews.map(review => `
                     <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl p-6 shadow-lg flex-shrink-0 w-80">
                         <div class="flex items-center mb-4">
                             <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">${review.name[0]}</div>
                             <div class="ml-3">
                                 <h3 class="text-white font-semibold">${review.name}</h3>
-                                <p class="text-slate-300 text-sm">${review.date}</p>
+                                <p class="text-slate-300 text-sm">${review.createdAt ? review.createdAt.toDate().toLocaleDateString('id-ID') : review.date}</p>
                             </div>
                         </div>
                         <p class="text-slate-200">"${review.text}"</p>
                         <div class="flex text-yellow-400 mt-2">${'★'.repeat(review.rating || 5)}</div>
                     </div>
                 `).join('');
-                if (reviews.length > 3) {
+                if (reviews.length > 2) {
                     container.style.width = `${reviews.length * 320 + (reviews.length - 1) * 24}px`;
                     startScrolling(reviews);
+                } else {
+                    // Hentikan animasi jika review <= 2
+                    if (scrollInterval) {
+                        clearInterval(scrollInterval);
+                        scrollInterval = null;
+                        container.style.transform = 'translateX(0)'; // Reset posisi
+                    }
                 }
             }
 
             function startScrolling(reviews) {
+                // Hentikan interval sebelumnya jika ada
+                if (scrollInterval) {
+                    clearInterval(scrollInterval);
+                }
                 const container = document.getElementById('reviews-container');
                 let position = 0;
                 const step = 320 + 24; // w-80 + gap-6
-                setInterval(() => {
+                scrollInterval = setInterval(() => {
                     position = (position + step) % ((reviews.length - 2) * step);
                     container.style.transform = `translateX(-${position}px)`;
                 }, 4000);
